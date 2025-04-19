@@ -13,27 +13,54 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                         <h2 class="card-title text-center mb-4">雨傘資訊登記表</h2>
-                        <form method="POST" enctype="multipart/form-data">
+                        <form action="/" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="umbrella_type" class="form-label">雨傘類型</label>
-                                <select class="form-select" id="umbrella_type" name="umbrella_type" required>
-                                    <option value="" selected disabled>請選擇雨傘類型</option>
-                                    <option value="長柄">長柄雨傘</option>
-                                    <option value="短柄">短柄雨傘</option>
-                                </select>
+                                <label class="form-label">雨傘類型</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="long_handle" name="umbrella_type" value="長柄">
+                                    <label class="form-check-label" for="long_handle">長柄雨傘</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="short_handle" name="umbrella_type" value="短柄">
+                                    <label class="form-check-label" for="short_handle">短柄雨傘</label>
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <label for="color" class="form-label">雨傘顏色</label>
-                                <select class="form-select" id="color" name="color" required>
-                                    <option value="" selected disabled>請選擇顏色</option>
-                                    <option value="黑色">黑色</option>
-                                    <option value="白色">白色</option>
-                                    <option value="藍色">藍色</option>
-                                    <option value="紅色">紅色</option>
-                                    <option value="粉色">粉色</option>
-                                    <option value="其他">其他</option>
-                                </select>
+                                <label class="form-label">雨傘顏色</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="black" name="color" value="黑色">
+                                    <label class="form-check-label" for="black">黑色</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="white" name="color" value="白色">
+                                    <label class="form-check-label" for="white">白色</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="blue" name="color" value="藍色">
+                                    <label class="form-check-label" for="blue">藍色</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="red" name="color" value="紅色">
+                                    <label class="form-check-label" for="red">紅色</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="pink" name="color" value="粉色">
+                                    <label class="form-check-label" for="pink">粉色</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="other" name="color" value="其他">
+                                    <label class="form-check-label" for="other">其他</label>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="found_datetime" class="form-label">拾獲日期時間</label>
@@ -42,9 +69,61 @@
                             <div class="mb-3">
                                 <label for="photo" class="form-label">雨傘照片</label>
                                 <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+                                <small class="text-muted">上傳的照片會儲存於本地的 static/uploads 目錄中</small>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">提交</button>
+                            <button type="submit" class="btn btn-primary w-100 mb-3">提交</button>
                         </form>
+                        <!-- 原查看按鈕可保留或移除 -->
+                        <!-- <a href="/view_photos.html" class="btn btn-secondary w-100">查看所有照片</a> -->
+                        <!-- 照片查詢與顯示區塊 -->
+                        <hr class="mt-4">
+                        <h4 class="mb-3">查詢已上傳照片</h4>
+                        <!-- 篩選表單 -->
+                        <form method="get" class="mb-3">
+                          <div class="row gy-2 gx-3 align-items-center">
+                            <div class="col-auto">
+                              <select class="form-select" name="umbrella_type">
+                                <option value="">所有種類</option>
+                                {% for t in types %}
+                                <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>{{ t }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="col-auto">
+                              <select class="form-select" name="color">
+                                <option value="">所有顏色</option>
+                                {% for c in colors %}
+                                <option value="{{ c }}" {% if c == selected_color %}selected{% endif %}>{{ c }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="col-auto">
+                              <input type="date" class="form-control" name="found_date" value="{{ selected_date }}">
+                            </div>
+                            <div class="col-auto">
+                              <button type="submit" class="btn btn-primary">篩選</button>
+                            </div>
+                            <div class="col-auto">
+                              <a href="{{ url_for('form') }}" class="btn btn-secondary">重設</a>
+                            </div>
+                          </div>
+                        </form>
+                        <!-- 照片列表 -->
+                        <div class="row">
+                          {% for umbrella in umbrellas %}
+                          <div class="col-md-4 mb-4">
+                            <div class="card">
+                              <img src="{{ url_for('static', filename=umbrella.photo_path) }}" class="card-img-top" alt="{{ umbrella.umbrella_type }}">
+                              <div class="card-body">
+                                <h5 class="card-title">{{ umbrella.umbrella_type }}</h5>
+                                <p class="card-text">顏色: {{ umbrella.color }}</p>
+                                <p class="card-text">拾獲時間: {{ umbrella.found_datetime.strftime('%Y-%m-%d %H:%M') }}</p>
+                                <a href="{{ url_for('static', filename=umbrella.photo_path) }}" class="btn btn-outline-primary" download>下載</a>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看照片</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">所有上傳的照片</h1>
+        <!-- 篩選表單 -->
+        <form method="get" class="mb-4">
+          <div class="row gy-2 gx-3 align-items-center">
+            <div class="col-auto">
+              <select class="form-select" name="umbrella_type">
+                <option value="">所有種類</option>
+                {% for t in types %}
+                <option value="{{ t }}" {% if t == selected_type %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto">
+              <select class="form-select" name="color">
+                <option value="">所有顏色</option>
+                {% for c in colors %}
+                <option value="{{ c }}" {% if c == selected_color %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto">
+              <input type="date" class="form-control" name="found_date" value="{{ selected_date }}">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary">篩選</button>
+            </div>
+            <div class="col-auto">
+              <a href="{{ url_for('view_photos') }}" class="btn btn-secondary">重設</a>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+            {% for umbrella in umbrellas %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ url_for('static', filename=umbrella.photo_path) }}" class="card-img-top" alt="{{ umbrella.umbrella_type }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ umbrella.umbrella_type }}</h5>
+                        <p class="card-text">顏色: {{ umbrella.color }}</p>
+                        <p class="card-text">拾獲時間: {{ umbrella.found_datetime.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <a href="{{ url_for('static', filename=umbrella.photo_path) }}" class="btn btn-primary" download>下載照片</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

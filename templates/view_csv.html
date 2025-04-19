@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看 CSV 資料</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>查看 CSV 資料</h1>
+        
+        <div class="csv-container">
+            <table class="csv-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>雨傘類型</th>
+                        <th>顏色</th>
+                        <th>拾獲時間</th>
+                        <th>照片路徑</th>
+                        <th>建立時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for umbrella in umbrellas %}
+                    <tr>
+                        <td>{{ umbrella.id }}</td>
+                        <td>{{ umbrella.umbrella_type }}</td>
+                        <td>{{ umbrella.color }}</td>
+                        <td>{{ umbrella.found_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ umbrella.photo_path }}</td>
+                        <td>{{ umbrella.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="button-container">
+            <a href="{{ url_for('form') }}" class="button">返回表單</a>
+            <a href="{{ url_for('export_csv') }}" class="button">下載 CSV</a>
+        </div>
+    </div>
+</body>
+</html>
