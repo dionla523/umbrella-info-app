@@ -1,11 +1,51 @@
 [build]
-command = "pip install -r requirements.txt && python app.py"
-publish = "."
+command = "pip install -r requirements.txt"
+publish = "templates"
 
 [build.environment]
 PYTHON_VERSION = "3.11"
 
 [[redirects]]
 from = "/*"
-to = "/.netlify/functions/server"
+to = "/form.html"
+status = 200
+
+[[redirects]]
+from = "/thankyou.html"
+to = "/thankyou.html"
+status = 200
+
+[[redirects]]
+from = "/form.html"
+to = "/form.html"
+status = 200
+
+[[redirects]]
+from = "/submit"
+to = "/thankyou.html"
+status = 302
+
+[[redirects]]
+from = "/export_csv"
+to = "/export_csv"
+status = 200
+
+[[redirects]]
+from = "/view_photos"
+to = "/view_photos"
+status = 200
+
+[[redirects]]
+from = "/view_csv"
+to = "/view_csv"
+status = 200
+
+[[redirects]]
+from = "/view_csv.html"
+to = "/view_csv.html"
+status = 200
+
+[[redirects]]
+from = "/static/csv/umbrella_records.csv"
+to = "/static/csv/umbrella_records.csv"
 status = 200

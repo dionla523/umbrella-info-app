@@ -1,3 +1,5 @@
+import os
+os.environ['DATABASE_URL'] = ''
 from app import app, db
 
 with app.app_context():
